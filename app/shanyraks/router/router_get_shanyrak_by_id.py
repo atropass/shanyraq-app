@@ -18,7 +18,7 @@ class GetMyShanyrakResponse(AppModel):
     description: str
 
 
-@router.get("/shanyraks/{id}", response_model=GetMyShanyrakResponse, status_code=200)
+@router.get("/{id}", response_model=GetMyShanyrakResponse, status_code=200)
 def get_shanyrak(
     id: str,
     svc: Service = Depends(get_service),

@@ -11,7 +11,7 @@ class DeleteShanyrakRequest(AppModel):
     id: str
 
 
-@router.delete("/shanyraks/{id}", status_code=200)
+@router.delete("/{id}", status_code=200)
 def delete_shanyrak(
     id: str,
     input: DeleteShanyrakRequest,
