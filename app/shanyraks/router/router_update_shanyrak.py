@@ -24,9 +24,6 @@ def update_shanyrak(
     svc: Service = Depends(get_service),
 ) -> dict[str, str]:
     shanyrak = svc.repository.update_shanyrak_by_id(id, jwt_data.user_id, input.dict())
-
-    print(shanyrak)
-
     if shanyrak is False:
         return Response(status_code=404)
 
