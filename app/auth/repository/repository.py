@@ -46,3 +46,13 @@ class AuthRepository:
                 }
             },
         )
+
+    def update_comment(self, user_id: str, comment_id: str, data: dict):
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id), "comments._id": comment_id},
+            update={
+                "$set": {
+                    "comments.$.content": data["content"],
+                }
+            },
+        )

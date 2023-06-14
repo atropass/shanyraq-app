@@ -2,6 +2,7 @@ from datetime import datetime
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
+from typing import List
 
 
 class ShanyrakRepository:
@@ -75,3 +76,89 @@ class ShanyrakRepository:
         )
 
         return result.deleted_count == 1
+
+    def add_shanyrak_media(self, id: str, media: str) -> dict | None:
+        shanyrak = self.database["shanyraks"].find_one(
+            {
+                "_id": ObjectId(id),
+            }
+        )
+        if shanyrak is None:
+            return None
+
+        result = self.database["shanyraks"].update_one(
+            filter={"_id": ObjectId(id)},
+            update={
+                "$push": {
+                    "media": media,
+                }
+            },
+        )
+
+        return result
+
+    def delete_shanyrak_media(self, id: str, media: List[str]):
+        shanyrak = self.database["shanyraks"].find_one(
+            {
+                "_id": ObjectId(id),
+            }
+        )
+        if shanyrak is None:
+            return None
+        for m in media:
+            result = self.database["shanyraks"].update_one(
+                filter={"_id": ObjectId(id)},
+                update={"$pull": {"media": m}},
+            )
+
+        return result
+
+    def add_comment_to_shanyrak(self, id: str, comment_content: str) -> dict | None:
+        shanyrak = self.database["shanyraks"].find_one(
+            {
+                "_id": ObjectId(id),
+            }
+        )
+        if shanyrak is None:
+            return None
+
+        result = self.database["shanyraks"].update_one(
+            filter={"_id": ObjectId(id)},
+            update={
+                "$push": {
+                    "comments": comment_content,
+                }
+            },
+        )
+
+        return result
+
+    def update_comment_by_id(
+        self, id: str, comment_id: str, user_id: str, content: str
+    ):
+        shanyrak = self.database["shanyraks"].find_one(
+            {
+                "_id": ObjectId(id),
+            }
+        )
+
+        if shanyrak is None:
+            return None
+
+        if shanyrak["comments"] is None:
+            return None
+
+        result = self.database["shanyraks"].update_one(
+            filter={
+                "_id": ObjectId(id),
+                "comments.id": ObjectId(comment_id),
+                "comments.author_id": ObjectId(user_id),
+            },
+            update={
+                "$set": {
+                    "comments.$.content": content,
+                }
+            },
+        )
+
+        return result

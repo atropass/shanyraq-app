@@ -5,6 +5,7 @@ from app.utils import AppModel
 from ..service import Service, get_service
 from . import router
 from pydantic import Field
+from typing import List
 
 
 class GetMyShanyrakResponse(AppModel):
@@ -16,6 +17,8 @@ class GetMyShanyrakResponse(AppModel):
     area: float
     rooms_count: int
     description: str
+    media: List[str]
+    comments: List[dict[str, Any]]
 
 
 @router.get("/{id}", response_model=GetMyShanyrakResponse, status_code=200)
