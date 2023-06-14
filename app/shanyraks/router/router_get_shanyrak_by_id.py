@@ -24,9 +24,6 @@ def get_shanyrak(
     svc: Service = Depends(get_service),
 ) -> dict[str, str]:
     shanyrak = svc.repository.get_shanyrak_by_id(id)
-
-    print(shanyrak)
-
     if shanyrak is None:
         return Response(status_code=404)
 

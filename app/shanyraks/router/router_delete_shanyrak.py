@@ -19,9 +19,6 @@ def delete_shanyrak(
     svc: Service = Depends(get_service),
 ) -> dict[str, str]:
     shanyrak = svc.repository.delete_shanyrak_by_id(id, jwt_data.user_id)
-
-    print(shanyrak)
-
     if shanyrak is False:
         return Response(status_code=404)
 

@@ -40,6 +40,4 @@ def create_shanyrak(
         }
     )
 
-    print(shanyrak_id)
-
     return CreateShanyrakResponse(id=shanyrak_id)
