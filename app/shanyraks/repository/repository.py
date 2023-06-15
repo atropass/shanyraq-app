@@ -18,6 +18,8 @@ class ShanyrakRepository:
             "area": input["area"],
             "rooms_count": input["rooms_count"],
             "description": input["description"],
+            "media": [],
+            "comments": [],
             "created_at": datetime.utcnow(),
         }
 
@@ -133,9 +135,23 @@ class ShanyrakRepository:
 
         return result
 
-    def update_comment_by_id(
-        self, id: str, comment_id: str, user_id: str, content: str
-    ):
+    def update_comment_by_id(self, id: str, comment_id: str, content: str):
+        result = self.database["shanyraks"].update_one(
+            filter={
+                "_id": ObjectId(id),
+                "comments.id": comment_id,
+                # "comments.author_id": str(user_id),
+            },
+            update={
+                "$set": {
+                    "content": content,
+                }
+            },
+        )
+
+        return result
+
+    def delete_comment(self, id: str, comment_id: str, user_id: str):
         shanyrak = self.database["shanyraks"].find_one(
             {
                 "_id": ObjectId(id),
@@ -149,16 +165,29 @@ class ShanyrakRepository:
             return None
 
         result = self.database["shanyraks"].update_one(
-            filter={
-                "_id": ObjectId(id),
-                "comments.id": ObjectId(comment_id),
-                "comments.author_id": ObjectId(user_id),
-            },
+            filter={"_id": ObjectId(id)},
             update={
-                "$set": {
-                    "comments.$.content": content,
+                "$pull": {
+                    "comments": {
+                        "_id": comment_id,
+                        "author_id": user_id,
+                    },
                 }
             },
         )
 
         return result
+
+    # def update_comment(self, shanyrak_id: str, comment_id: str, content: str):
+    #     comments = ShanyrakRepository.get_comments_by_id(self, shanyrak_id)
+    #     for comment in comments:
+    #         if comment["_id"] == ObjectId(comment_id):
+    #             newComment = comment
+    #             newComment["content"] = content
+    #             newComment["created_at"] = datetime.utcnow()
+    #             i = comments.index(comment)
+    #             comments.pop(i)
+    #             comments.insert(i, newComment)
+    #             self.database["shanyraks"].update_one(
+    #                 {"_id": ObjectId(shanyrak_id)}, {"$set": {"comments": comments}}
+    #             )

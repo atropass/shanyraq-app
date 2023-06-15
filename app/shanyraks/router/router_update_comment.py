@@ -16,24 +16,18 @@ def update_comment(
     svc: Service = Depends(get_service),
 ) -> Response:
     shanyrak = svc.repository.get_shanyrak_by_id(id)
-    user_id = jwt_data.user_id
-
-    if user_id != str(shanyrak["user_id"]):
-        return Response(status_code=401)
-
     if shanyrak is None:
         return Response(status_code=404)
 
-    comments = shanyrak.get("comments", [])
-    for comment in comments:
-        if comment["_id"] == comment_id:
-            result = svc.repository.update_comment_by_id(
-                id, comment_id, jwt_data.user_id, comment_content
-            )
+    user_id = jwt_data.user_id
 
+    if user_id != str(shanyrak["user_id"]):
+        return Response(status_code=403)
+
+    result = svc.repository.update_comment_by_id(id, comment_id, comment_content)
     if result is None:
         return Response(status_code=406)
 
     if result.modified_count == 0:
-        return Response(status_code=401)
+        return Response(status_code=402)
     return Response(status_code=200)
