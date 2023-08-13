@@ -1,8 +1,5 @@
-# FastAPI + MongoDB Boilerplate
+# FastAPI + MongoDB 
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/WleFVe?referralCode=UBd_g_)
-
-This is a FastAPI boilerplate, which includes includes:
 
 - MongoDB as database
 - Bcrypt for password hashing
